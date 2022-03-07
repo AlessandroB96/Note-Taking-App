@@ -34,6 +34,7 @@ app.delete('/api/notes/:id', (req, res) => {
         notes = notes.filter(notes => notes.id != id);
         console.log(notes)
         res.status(200).json(deleted)
+        createNewNote();
      } else {
          res
          .status(404)
