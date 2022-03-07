@@ -3,7 +3,7 @@ const fs = require('fs');
 const app = express();
 const path = require('path');
 const { nextTick } = require('process');
-const notes = require('./Develop/db/db.json');
+let notes = require('./Develop/db/db.json');
 const uuid = require('./Develop/helpers/uuid'); //method for generating unique IDs 
 
 const PORT = process.env.PORT || 3001;
@@ -23,6 +23,22 @@ app.get('/notes', (req, res) => {
 app.get('/api/notes', (req, res) => {
     let results = notes;
     res.json(results)
+});
+
+app.delete('/api/notes/:id', (req, res) => {
+    const { id } = req.params;     //req.params.id if we dont reference deconstructor 
+    console.log(id);
+     const deleted = notes.find( notes => notes.id === id); //look inside array of objects for id 
+
+     if (deleted) {  //if the note id is inside the array, filters out the note from that array
+        notes = notes.filter(notes => notes.id != id);
+        console.log(notes)
+        res.status(200).json(deleted)
+     } else {
+         res
+         .status(404)
+         .json({ message: "This note does not exist "})
+     }
 });
 
 let createNewNote = (body, notesArray) => {
